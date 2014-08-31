@@ -1,2 +1,5 @@
+TNAdmin.sublime-project
+TNAdmin.sublime-workspace
+*.db
 data/
 node_modules/
