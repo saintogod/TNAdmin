@@ -1,0 +1,19 @@
+{
+    "name": "TNAdmin",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "node ./bin/www"
+    },
+    "dependencies": {
+        "express": "*",
+        "servr-favicon": "*",
+        "morgan": "*",
+        "cookie-parser": "*",
+        "body-parser": "*",
+        "debug": "*",
+        "jade": "*",
+        "mongodb": "1.4.1",
+        "monk": "*"
+    }
+}

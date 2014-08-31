@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  div#script-task
+    include partials/scriptselector
+
+  div#select-test-node
+    include partials/nodeselector
+  div(ng-view)

@@ -1,0 +1,25 @@
+div.test-node-item.task-success
+    div.panel
+      .panel-heading
+        h4.panel-title
+          a(data-toggle='collapse', href='#') v-sh-tn1
+          span.used-by st
+          span.status running
+        div.node-operation.float-right
+          a(href='#', title="Refresh Status")
+            i.fa.fa-refresh
+          a(href='#', title="Run Again")
+            i.fa.fa-cicle-o
+          a(href='#', title="Duplicate The Task")
+            i.fa.fa-copy
+          a(href='#', title="Lock Node")
+            i.fa.fa-lock
+          a(href='#', title="Release Node")
+            i.fa.fa-unlock-alt
+      .panel-collapse.collapse.in
+        .panel-body
+          .row
+            .col-md-3.col-sm-4.col-xs-6(title='Create Time') 2014/12/30 09:23:33
+            .clearfix.visible-xs-block
+            .col-md-3.col-sm-4.col-xs-6 2015/12/20 14:32:33
+            .col-md-3.col-sm-4.col-xs-6 2015/12/20 17:12:49

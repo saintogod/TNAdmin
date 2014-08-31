@@ -1,0 +1,57 @@
+doctype html
+html(lang='en', ng-app="tnAdmin")
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width', initial-scale=1, user-scalable='no')
+    base(href='/')
+    title #{title}
+    link(rel="shortcut icon" href="favicon.ico")
+    link(rel='stylesheet', href='/css/bootstrap.css')
+    // link(rel='stylesheet', href='/css/bootstrap-theme.css')
+    link(rel='stylesheet', href='/css/font-awesome.css')
+    link(rel='stylesheet', href='/css/style.css')
+    script(src="/js/lib/jquery/jquery-2.1.1.js")
+    script(src="/js/lib/bootstrap/bootstrap.js")
+    script(src="/js/lib/angularjs/angular.js")
+    script(src="/js/lib/favico/favico-0.3.5.min.js")
+    script(src="/js/lib/favico/favicoProvider.js")
+    script(src="/js/lib/angularjs/angular-route.js")
+    script(src="/js/TNAdmin.main.js")
+    script(src="/js/controllers/TNAdmin.ctrl.site.js")
+    script(src="/js/directives/TNAdmin.drct.notetask.js")
+  body
+    header.navbar.navbar-default.navbar-fixed-top(role='navigation')
+      .container
+        .navbar-header
+          button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#tna-navbar')
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href='#') TestNodeAdmin
+        #tna-navbar.navbar-collapse.collapse(sytle='height:1px;')
+          ul.nav.navbar-nav
+            li.active
+              a(href='/') Home
+            li
+              a(href='/pending', title='Pending Tasks ') Pending
+            li
+              a(href='/history', title='History of Tasks') History
+            li
+              a(href='/statistic', title='Statistic Information of This Site') Statistic
+            li
+              a(href='/maintenance', title='Maintenance the test nodes') Maintenance
+            li.dropdown
+              a.dropdown-toggle(data-toggle='dropdown')
+                | Settings
+                span.caret
+              ul.dropdown-menu(role='menu')
+                li
+                  a(title='Settings the default values used in site') Default Values
+          ul.nav.navbar-nav.navbar-right
+            li
+              a(title='Create New Task') New Task
+    div.main-content.container(ng-controller='siteCtrl')
+      block content
+    footer
+      .container Copyright © 2014 Laserfiche

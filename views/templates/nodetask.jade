@@ -1,0 +1,41 @@
+div.test-node-item(ng-class='nctrl.GetStatusCss(node)')
+    div.panel.panel-default
+      .panel-heading
+        h3.panel-title
+          a(data-toggle='collapse', data-target='\#{{:: node.Status === "Locked" ? node.NodeName: ""}}', href='#')
+            i.fa.fa-lg.fa-desktop
+          a(ng-href='node/{{::node.NodeName}}')
+            span.tn-name {{::node.NodeName}}
+          span.used-by(ng-if="node.UsedBy") {{node.UsedBy}}
+          span.status {{node.Status}}
+          span.stage(ng-if="node.Status==='Locked' && node.Stage !=='Locking'") {{node.Stage}}
+          div.node-operation.float-right
+            a(href='#', title="Refresh Status", data-toggle="tooltip", data-placement="top", ng-click="nctrl.RefreshStatus(node)")
+              i.fa.fa-lg.fa-refresh
+            a(href='#', title="Run Task Again", data-toggle="tooltip", data-placement="top", ng-if="node.Stage==='TestSucceed' || node.Stage==='TestFailed'")
+              i.fa.fa-lg.fa-circle-o
+            a(href='#', title="Run Failed Cases Again", data-toggle="tooltip", data-placement="top", ng-if="node.Stage==='TestFailed'")
+              i.fa.fa-lg.fa-circle-o-notch
+            a(href='#', title="Duplicate The Task", data-toggle="tooltip", data-placement="top", ng-if="node.TaskType && node.TaskType !== 'Lock'")
+              i.fa.fa-lg.fa-copy
+            a(href='#', title="Lock Node", data-toggle="tooltip", data-placement="top", ng-if="node.Status==='Idle'")
+              i.fa.fa-lg.fa-lock
+            a(href='#', title="Release Node", data-toggle="tooltip", data-placement="top", ng-if="nctrl.IsTaskFinished(node)")
+              i.fa.fa-lg.fa-unlock-alt
+      .panel-collapse.collapse(id="{{::node.NodeName}}", ng-class="{'in': node.Status === 'Locked' && node.TaskType !== 'Lock'}")
+        .panel-body
+          .row.task-data
+            .col-md-1.col-sm-2.col-xs-3.target-project {{node.TargetProject}}
+            .col-md-1.col-sm-2.col-xs-3.task-type {{node.TaskType}}
+            .col-md-1.col-sm-2.col-xs-3.svn-revision {{node.Revision}}
+            .col-md-1.col-sm-2.col-xs-3
+            .col-md-4.col-sm-6.col-xs-12.svn-url-cell(title="{{node.SVNUrl}}", data-toggle="tooltip", data-placement="top") {{node.SVNUrl | svnFilter}}
+            .col-md-4.col-sm-6.col-xs-12.nunit-args-cell(title="{{node.TestArg}}", data-toggle="tooltip", data-placement="top") {{node.TestArg}}
+            .col-md-2.col-sm-4.hidden-xs.create-date-cell(title="Created at: {{::node.CreateDate | date:'yyyy-MM-dd HH:mm:ss'}}", data-toggle="tooltip", data-placement="top") {{::node.CreateDate | date:'yyyy-MM-dd HH:mm:ss'}}
+            .col-md-2.col-sm-4.col-xs-6.start-date-cell(title="Started at: {{::node.StartDate | date:'yyyy-MM-dd HH:mm:ss'}}", data-toggle="tooltip", data-placement="top") {{::node.StartDate | date:'yyyy-MM-dd HH:mm:ss'}}
+            .col-md-2.col-sm-4.col-xs-6.finish-date-cell(title="Finished at: {{::node.FinishDate | date:'yyyy-MM-dd HH:mm:ss'}}", data-toggle="tooltip", data-placement="top", ng-if="node.FinishDate") {{::node.FinishDate | date:'yyyy-MM-dd HH:mm:ss'}}
+            .col-md-6.col-sm-12.col-xs-12.logs(ng-if="node.Logs && node.Logs.length > 0")
+              a(href="{{node.Logs.BuildLog| encodeUri}}", ng-if="node.Logs.BuildLog", title='Build Log: {{node.Logs.BuildLog}}') Build Log
+              a(href="{{node.Logs.Output| encodeUri}}", ng-if='node.Logs.Output', title='SVN Output: {{node.Logs.Output}}') SVN Output
+              a(href="{{node.Logs.Result.HTML| encodeUri}}", ng-if='node.Logs.Result | hasHtmlResult', title='Result(HTML): {{node.Logs.Result.HTML}}') Result(HTML)
+              a(href="{{node.Logs.Result.XML| encodeUri}}", ng-if='node.Logs.Result | hasXmlResult', title='Result(XML): {{node.Logs.Result.XML}}') Result(XML)

@@ -1,0 +1,104 @@
+html, body{
+    height: 100%;
+}
+.main-content{
+    padding-top: 70px;
+    padding-bottom: 30px;
+    height: 100%;
+}
+footer{
+    top: -30px;
+    position: relative;
+    text-align: center;
+}
+
+@media screen and (max-width: 800px) {
+    #friend-sites{
+        display: none;
+    }
+}
+@media screen and (min-width: 800px) and (max-width: 991px){
+    .navbar .container{
+        width: 100%;
+    }
+}
+.float-right{
+    float:right;
+}
+.panel-title .used-by:before{
+    content: "Used By: ";
+    padding-left: 10px;
+}
+.panel-title .status:before{
+    content: "Status: ";
+    padding-left: 10px;
+}
+.panel-title .stage:before{
+    content: "Stage: ";
+    padding-left: 10px;
+}
+.panel-title .tn-name{
+    padding-left: 10px;
+    font-size:18px;
+}
+.panel-title .node-operation .fa{
+    padding: 0 3px;
+}
+.test-node-item .task-data >div{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap
+ }
+.test-node-item .task-data a{
+    padding: 0 2px;
+ }
+.test-node-item .task-data [class^=col]{
+    padding-bottom: 15px;
+ }
+ .logs a{
+    background-color: aliceblue;
+ }
+.logs a:not(:last-child):after {
+    padding: 0 3px;
+    content: "|";
+    top: -1px;
+    position: relative;
+}
+a.dropdown-toggle, #tna-navbar .dropdown.open > ul a {
+    cursor: pointer;
+}
+
+.create-date-cell::before{
+    content: 'C';
+    color: rgb(207, 23, 214);
+    padding-right: 2px;
+}
+.start-date-cell::before{
+    content: 'S';
+    color: rgb(207, 23, 214);
+    padding-right: 2px;
+}
+.finish-date-cell::before{
+    content: 'F';
+    color: rgb(207, 23, 214);
+    padding-right: 2px;
+}
+.release-date-cell::before{
+    content: 'R';
+    color: rgb(207, 23, 214);
+    padding-right: 2px;
+}
+.svn-url-cell::before{
+    content: 'SVN: ';
+    color: rgb(207, 23, 214);
+    padding-right: 2px;
+}
+.nunit-args-cell::before{
+    content: 'Args: ';
+    color: rgb(207, 23, 214);
+    padding-right: 2px;
+}
+
+.task-data .tooltip-inner{
+    max-width: none;
+}
