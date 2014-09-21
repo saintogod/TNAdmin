@@ -19,8 +19,8 @@
 
         function link(scope, iElement){
             $timeout(function(){
-                $("[data-toggle='tooltip']", iElement).tooltip();
-                $log.log(scope.node.NodeName+ " Started.");
+                $('[data-toggle="tooltip"]', iElement).tooltip();
+                //$log.log(scope.node.NodeName+ " Started.");
             });
         }
     }

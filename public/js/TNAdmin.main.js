@@ -1,6 +1,22 @@
-
 (function() {
     'use strict';
+    if (!String.prototype.format) {
+        String.prototype.format = function() {
+            var args = arguments;
+            return this.replace(/{(\d+)}/g, function(match, number) {
+                return typeof args[number] !== 'undefined' ? args[number] : match;
+            });
+        };
+    }
+    if (!String.format) {
+        String.format = function(format) {
+            var args = Array.prototype.slice.call(arguments, 1);
+            return format.replace(/{(\d+)}/g, function(match, number) {
+                return typeof args[number] !== 'undefined' ? args[number] : match;
+            });
+        };
+    }
+
     var tna = {
         Name: 'TestNodeAdministrator',
         Discription: 'This is all the angular stuff for this site.'
@@ -9,7 +25,7 @@
     angular.module('tna.Controllers', ['favico.Provider']);
     angular.module('tna.Directives', ['tna.Controllers']);
 
-    angular.module('tnAdmin', ['ngRoute', 'tna.Services', 'tna.Directives', 'tna.Controllers']);
+    angular.module('tnAdmin', ['ngRoute', 'tna.Services', 'tna.Directives', 'tna.Controllers', 'ngAnimate', 'ui.grid', 'ui.grid.selection']);
 
     angular.module('tnAdmin')
         .config(configs)
@@ -34,6 +50,14 @@
             return function(inputVal) {
                 return inputVal && inputVal.XML;
             };
+        }).filter('machinesText', function() {
+            return function(inputVal) {
+                if( !inputVal || !angular.isArray(inputVal) || inputVal.length === 0) {
+                    return 'Any machine';
+                } else {
+                    return inputVal.join(', ');
+                }
+            };
         });
 
     configs.$inject = ['$routeProvider', '$locationProvider', 'favicoProvider'];
@@ -43,6 +67,7 @@
         $routeProvider.when('/pending', {
             templateUrl: '/partials/pending',
             controller: 'pendingCtrl',
+            controllerAs: 'pctrl',
             resolve: {
                 pageService: pageService
             }
@@ -66,13 +91,19 @@
             }
         });
         $locationProvider.html5Mode(true).hashPrefix('!');
-
+        favicoProvider.bgColor('#d00');
         nodeService.$inject = ['$rootScope', '$http', '$log'];
+        pageService.$inject = ['$rootScope', '$http', '$log'];
 
-        function pageService() {
+        function pageService($rootScope, $http, $log) {
             return {
-                title: 'Pending .... page'
+                title: 'Pending .... page',
+                getPendingTasks: getPendingTasks
             };
+
+            function getPendingTasks() {
+                return $http.get('/api/pending');
+            }
         }
 
         function nodeService($rootScope, $http, $log) {

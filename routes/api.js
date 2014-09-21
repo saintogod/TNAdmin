@@ -44,6 +44,12 @@ router.get('/nodelist', function(req, res) {
     collection.find({}, {}, function(e, data) {
         res.json(data);
     });
+}).get('/pending', function(req, res){
+    var db = req.db;
+    var collection = db.get('tasks');
+    collection.find({Stage:'Pending'}, function(e, data){
+        res.json(data);
+    });
 });
 
 module.exports = router;

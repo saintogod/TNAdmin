@@ -12,15 +12,15 @@ div.test-node-item(ng-class='nctrl.GetStatusCss(node)')
           div.node-operation.float-right
             a(href='#', title="Refresh Status", data-toggle="tooltip", data-placement="top", ng-click="nctrl.RefreshStatus(node)")
               i.fa.fa-lg.fa-refresh
-            a(href='#', title="Run Task Again", data-toggle="tooltip", data-placement="top", ng-if="node.Stage==='TestSucceed' || node.Stage==='TestFailed'")
+            a(href='#', title="Run Task Again", data-toggle="tooltip", data-placement="top", ng-if="node.Stage==='TestSucceed' || node.Stage==='TestFailed'", ng-click="nctrl.RunAgain(node)")
               i.fa.fa-lg.fa-circle-o
-            a(href='#', title="Run Failed Cases Again", data-toggle="tooltip", data-placement="top", ng-if="node.Stage==='TestFailed'")
+            a(href='#', title="Run Failed Cases Again", data-toggle="tooltip", data-placement="top", ng-if="node.Stage==='TestFailed'", ng-click="nctrl.RunFailed(node)")
               i.fa.fa-lg.fa-circle-o-notch
-            a(href='#', title="Duplicate The Task", data-toggle="tooltip", data-placement="top", ng-if="node.TaskType && node.TaskType !== 'Lock'")
+            a(href='#', title="Duplicate The Task", data-toggle="tooltip", data-placement="top", ng-if="node.TaskType && node.TaskType !== 'Lock'", ng-click="nctrl.Duplicate(node)")
               i.fa.fa-lg.fa-copy
-            a(href='#', title="Lock Node", data-toggle="tooltip", data-placement="top", ng-if="node.Status==='Idle'")
+            a(href='#', title="Lock Node", data-toggle="tooltip", data-placement="top", ng-if="node.Status==='Idle'", ng-click="nctrl.Lock(node.NodeName)")
               i.fa.fa-lg.fa-lock
-            a(href='#', title="Release Node", data-toggle="tooltip", data-placement="top", ng-if="nctrl.IsTaskFinished(node)")
+            a(href='#', title="Release Node", data-toggle="tooltip", data-placement="top", ng-if="nctrl.IsTaskFinished(node)", ng-click="nctrl.Release(node.NodeName)")
               i.fa.fa-lg.fa-unlock-alt
       .panel-collapse.collapse(id="{{::node.NodeName}}", ng-class="{'in': node.Status === 'Locked' && node.TaskType !== 'Lock'}")
         .panel-body
@@ -28,9 +28,9 @@ div.test-node-item(ng-class='nctrl.GetStatusCss(node)')
             .col-md-1.col-sm-2.col-xs-3.target-project {{node.TargetProject}}
             .col-md-1.col-sm-2.col-xs-3.task-type {{node.TaskType}}
             .col-md-1.col-sm-2.col-xs-3.svn-revision {{node.Revision}}
-            .col-md-1.col-sm-2.col-xs-3
-            .col-md-4.col-sm-6.col-xs-12.svn-url-cell(title="{{node.SVNUrl}}", data-toggle="tooltip", data-placement="top") {{node.SVNUrl | svnFilter}}
-            .col-md-4.col-sm-6.col-xs-12.nunit-args-cell(title="{{node.TestArg}}", data-toggle="tooltip", data-placement="top") {{node.TestArg}}
+            .col-md-1.col-sm-2.col-xs-3 &nbsp;
+            .col-md-4.col-sm-6.col-xs-12.svn-url-cell(title="{{::node.SVNUrl}}", data-toggle="tooltip", data-placement="top") {{node.SVNUrl | svnFilter}}
+            .col-md-4.col-sm-6.col-xs-12.nunit-args-cell(title="{{::node.TestArg}}", data-toggle="tooltip", data-placement="top", ng-if="node.TestArg.length>0") {{::node.TestArg}}
             .col-md-2.col-sm-4.hidden-xs.create-date-cell(title="Created at: {{::node.CreateDate | date:'yyyy-MM-dd HH:mm:ss'}}", data-toggle="tooltip", data-placement="top") {{::node.CreateDate | date:'yyyy-MM-dd HH:mm:ss'}}
             .col-md-2.col-sm-4.col-xs-6.start-date-cell(title="Started at: {{::node.StartDate | date:'yyyy-MM-dd HH:mm:ss'}}", data-toggle="tooltip", data-placement="top") {{::node.StartDate | date:'yyyy-MM-dd HH:mm:ss'}}
             .col-md-2.col-sm-4.col-xs-6.finish-date-cell(title="Finished at: {{::node.FinishDate | date:'yyyy-MM-dd HH:mm:ss'}}", data-toggle="tooltip", data-placement="top", ng-if="node.FinishDate") {{::node.FinishDate | date:'yyyy-MM-dd HH:mm:ss'}}
