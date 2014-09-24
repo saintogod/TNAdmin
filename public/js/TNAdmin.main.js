@@ -25,7 +25,7 @@
     angular.module('tna.Controllers', ['favico.Provider']);
     angular.module('tna.Directives', ['tna.Controllers']);
 
-    angular.module('tnAdmin', ['ngRoute', 'tna.Services', 'tna.Directives', 'tna.Controllers', 'ngAnimate', 'ui.grid', 'ui.grid.selection']);
+    angular.module('tnAdmin', ['ngRoute', 'tna.Services', 'tna.Directives', 'tna.Controllers', 'ngAnimate', 'ui.grid', 'ui.grid.selection', 'ui.bootstrap']);
 
     angular.module('tnAdmin')
         .config(configs)

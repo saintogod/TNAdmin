@@ -1,3 +1,8 @@
+/* global db */
+/* exported getNextSequence */
+'use strict';
+
+
 db.counters.drop();
 db.counters.insert({_id:'TaskId', seq:0});
 function getNextSequence(name) {

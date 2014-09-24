@@ -1,3 +1,53 @@
-.grid-toolbar.
-  this is the toolbar of the ng-grid {{::pctrl.title}}
-.grid(ui-grid="pctrl.gridOptions", ui-grid-selection)
+.grid-toolbar.btn-group
+  button.btn.btn-default(type="button", ng-click="DeleteTasks()")
+    i.fa.fa-trash-o
+  button.btn.btn-default(type="button", ng-click="GetPendingTasks()")
+    i.fa.fa-refresh
+//.grid(ui-grid="pctrl.gridOptions", ui-grid-selection)
+.pending-list
+  table.table
+    thead
+      tr
+        th(style="width:20px")
+          input(type="checkbox", ng-click="pctrl.CheckAll()", ng-model="pctrl.checkedAll")
+        th(style="max-width:50px").
+          ID
+        th(style="max-width:60px").
+          User
+        th(style="max-width:50px").
+          Project
+        th(style="max-width:50px").
+          TaskType
+        th(style="max-width:80px").
+          Revision
+        th(style="min-width:100px").
+          SVN
+        th(style="min-width:80px").
+          TestArgs
+        th(style="max-width:80px").
+          LFSORev.
+        th(style="width:150px").
+          Create Date
+    tbody
+      tr(ng-repeat="ptask in pctrl.pendingList track by ptask._id", ng-class="{'success': ptask.selected}")
+        td
+          input(type="checkbox",ng-model="ptask.selected")
+        td
+          div.full-width {{::ptask._id}}
+        td
+          div.full-width {{::ptask.UsedBy}}
+        td
+          div.full-width {{::ptask.TargetProject}}
+        td
+          div.full-width {{::ptask.TaskType}}
+        td
+          div.full-width {{::ptask.Revision}}
+        td
+          div.full-width.overflow-ellipise(tooltip="{{::ptask.SVNUrl}}") {{::ptask.SVNUrl | svnFilter}}
+        td
+          div.full-width.overflow-ellipise(tooltip="{{::ptask.TestArg}}") {{::ptask.TestArg}}
+        td
+          div.full-width {{::ptask.LFSORev}}
+        td
+          div.full-width.overflow-ellipise(tooltip="{{::ptask.CreateDate| date:'yyyy-MM-dd HH:mm:ss'}}") {{::ptask.CreateDate| date:'yyyy-MM-dd HH:mm:ss'}}
+

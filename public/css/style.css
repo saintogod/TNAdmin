@@ -108,3 +108,16 @@ a.dropdown-toggle, #tna-navbar .dropdown.open > ul a {
     -moz-box-sizing: content-box;
     box-sizing: content-box;
 }
+.full-width{
+    display: block;
+    width: 100%;
+}
+.overflow-ellipise{
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.tooltip-inner{
+    max-width: 365px;
+}

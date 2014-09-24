@@ -9190,7 +9190,7 @@ return jQuery;
 }));
 
 /**
- * @license AngularJS v1.3.0-rc.2
+ * @license AngularJS v1.3.0-rc.3
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -9263,7 +9263,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-rc.2/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-rc.3/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -9323,7 +9323,6 @@ function minErr(module, ErrorConstructor) {
   trim: true,
   isElement: true,
   makeMap: true,
-  map: true,
   size: true,
   includes: true,
   arrayRemove: true,
@@ -9600,7 +9599,7 @@ function setHashKey(obj, h) {
  * @kind function
  *
  * @description
- * Extends the destination object `dst` by copying all of the properties from the `src` object(s)
+ * Extends the destination object `dst` by copying own enumerable properties from the `src` object(s)
  * to `dst`. You can specify multiple `src` objects.
  *
  * @param {Object} dst Destination object.
@@ -9887,15 +9886,6 @@ function makeMap(str) {
 
 function nodeName_(element) {
   return lowercase(element.nodeName || element[0].nodeName);
-}
-
-
-function map(obj, iterator, context) {
-  var results = [];
-  forEach(obj, function(value, index, list) {
-    results.push(iterator.call(context, value, index, list));
-  });
-  return results;
 }
 
 
@@ -11314,11 +11304,11 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-rc.2',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-rc.3',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
-  codeName: 'tactile-perception'
+  codeName: 'aggressive-pacifism'
 };
 
 
@@ -17724,12 +17714,13 @@ function $HttpProvider() {
     expect(data.getText()).toMatch(/Hello, \$http!/);
   });
 
-  it('should make a JSONP request to angularjs.org', function() {
-    sampleJsonpBtn.click();
-    fetchBtn.click();
-    expect(status.getText()).toMatch('200');
-    expect(data.getText()).toMatch(/Super Hero!/);
-  });
+// Commented out due to flakes. See https://github.com/angular/angular.js/issues/9185
+// it('should make a JSONP request to angularjs.org', function() {
+//   sampleJsonpBtn.click();
+//   fetchBtn.click();
+//   expect(status.getText()).toMatch('200');
+//   expect(data.getText()).toMatch(/Super Hero!/);
+// });
 
   it('should make JSONP request to invalid URL and invoke the error handler',
       function() {
@@ -19529,7 +19520,10 @@ function locationGetterSetter(property, preprocess) {
  */
 function $LocationProvider(){
   var hashPrefix = '',
-      html5Mode = false;
+      html5Mode = {
+        enabled: false,
+        requireBase: true
+      };
 
   /**
    * @ngdoc method
@@ -19551,12 +19545,30 @@ function $LocationProvider(){
    * @ngdoc method
    * @name $locationProvider#html5Mode
    * @description
-   * @param {boolean=} mode Use HTML5 strategy if available.
-   * @returns {*} current value if used as getter or itself (chaining) if used as setter
+   * @param {(boolean|Object)=} mode If boolean, sets `html5Mode.enabled` to value.
+   *   If object, sets `enabled` and `requireBase` to respective values.
+   *   - **enabled** – `{boolean}` – Sets `html5Mode.enabled`. If true, will rely on
+   *     `history.pushState` to change urls where supported. Will fall back to hash-prefixed paths
+   *     in browsers that do not support `pushState`.
+   *   - **requireBase** - `{boolean}` - Sets `html5Mode.requireBase` (default: `true`). When
+   *     html5Mode is enabled, specifies whether or not a <base> tag is required to be present. If
+   *     `enabled` and `requireBase` are true, and a base tag is not present, an error will be
+   *     thrown when `$location` is injected. See the
+   *     {@link guide/$location $location guide for more information}
+   *
+   * @returns {Object} html5Mode object if used as getter or itself (chaining) if used as setter
    */
   this.html5Mode = function(mode) {
-    if (isDefined(mode)) {
-      html5Mode = mode;
+    if (isBoolean(mode)) {
+      html5Mode.enabled = mode;
+      return this;
+    } else if (isObject(mode)) {
+      html5Mode.enabled = isBoolean(mode.enabled) ?
+          mode.enabled :
+          html5Mode.enabled;
+      html5Mode.requireBase = isBoolean(mode.requireBase) ?
+          mode.requireBase :
+          html5Mode.requireBase;
       return this;
     } else {
       return html5Mode;
@@ -19598,8 +19610,8 @@ function $LocationProvider(){
         initialUrl = $browser.url(),
         appBase;
 
-    if (html5Mode) {
-      if (!baseHref) {
+    if (html5Mode.enabled) {
+      if (!baseHref && html5Mode.requireBase) {
         throw $locationMinErr('nobase',
           "$location in HTML5 mode requires a <base> tag to be present!");
       }
@@ -25566,9 +25578,9 @@ var uppercaseFilter = valueFn(uppercase);
            }]);
        </script>
        <div ng-controller="ExampleController">
-         Limit {{numbers}} to: <input type="integer" ng-model="numLimit">
+         Limit {{numbers}} to: <input type="number" step="1" ng-model="numLimit">
          <p>Output numbers: {{ numbers | limitTo:numLimit }}</p>
-         Limit {{letters}} to: <input type="integer" ng-model="letterLimit">
+         Limit {{letters}} to: <input type="number" step="1" ng-model="letterLimit">
          <p>Output letters: {{ letters | limitTo:letterLimit }}</p>
          Limit {{longNumber}} to: <input type="integer" ng-model="longNumberLimit">
          <p>Output long number: {{ longNumber | limitTo:longNumberLimit }}</p>
@@ -25591,17 +25603,18 @@ var uppercaseFilter = valueFn(uppercase);
          expect(limitedLongNumber.getText()).toEqual('Output long number: 234');
        });
 
-       it('should update the output when -3 is entered', function() {
-         numLimitInput.clear();
-         numLimitInput.sendKeys('-3');
-         letterLimitInput.clear();
-         letterLimitInput.sendKeys('-3');
-         longNumberLimitInput.clear();
-         longNumberLimitInput.sendKeys('-3');
-         expect(limitedNumbers.getText()).toEqual('Output numbers: [7,8,9]');
-         expect(limitedLetters.getText()).toEqual('Output letters: ghi');
-         expect(limitedLongNumber.getText()).toEqual('Output long number: 342');
-       });
+       // There is a bug in safari and protractor that doesn't like the minus key
+       // it('should update the output when -3 is entered', function() {
+       //   numLimitInput.clear();
+       //   numLimitInput.sendKeys('-3');
+       //   letterLimitInput.clear();
+       //   letterLimitInput.sendKeys('-3');
+       //   longNumberLimitInput.clear();
+       //   longNumberLimitInput.sendKeys('-3');
+       //   expect(limitedNumbers.getText()).toEqual('Output numbers: [7,8,9]');
+       //   expect(limitedLetters.getText()).toEqual('Output letters: ghi');
+       //   expect(limitedLongNumber.getText()).toEqual('Output long number: 342');
+       // });
 
        it('should not exceed the maximum size of input array', function() {
          numLimitInput.clear();
@@ -25616,7 +25629,7 @@ var uppercaseFilter = valueFn(uppercase);
        });
      </file>
    </example>
- */
+*/
 function limitToFilter(){
   return function(input, limit) {
     if (isNumber(input)) input = input.toString();
@@ -25780,7 +25793,7 @@ function orderByFilter($parse){
     if (!(isArrayLike(array))) return array;
     if (!sortPredicate) return array;
     sortPredicate = isArray(sortPredicate) ? sortPredicate: [sortPredicate];
-    sortPredicate = map(sortPredicate, function(predicate){
+    sortPredicate = sortPredicate.map(function(predicate){
       var descending = false, get = predicate || identity;
       if (isString(predicate)) {
         if ((predicate.charAt(0) == '+' || predicate.charAt(0) == '-')) {
@@ -26322,6 +26335,7 @@ forEach(['src', 'srcset', 'href'], function(attrName) {
  */
 var nullFormCtrl = {
   $addControl: noop,
+  $$renameControl: nullFormRenameControl,
   $removeControl: noop,
   $setValidity: noop,
   $$setPending: noop,
@@ -26331,6 +26345,10 @@ var nullFormCtrl = {
   $$clearControlValidity: noop
 },
 SUBMITTED_CLASS = 'ng-submitted';
+
+function nullFormRenameControl(control, name) {
+  control.$name = name;
+}
 
 /**
  * @ngdoc type
@@ -26369,17 +26387,18 @@ SUBMITTED_CLASS = 'ng-submitted';
  *
  */
 //asks for $scope to fool the BC controller module
-FormController.$inject = ['$element', '$attrs', '$scope', '$animate'];
-function FormController(element, attrs, $scope, $animate) {
+FormController.$inject = ['$element', '$attrs', '$scope', '$animate', '$interpolate'];
+function FormController(element, attrs, $scope, $animate, $interpolate) {
   var form = this,
-      parentForm = element.parent().controller('form') || nullFormCtrl,
       controls = [];
+
+  var parentForm = form.$$parentForm = element.parent().controller('form') || nullFormCtrl;
 
   // init state
   form.$error = {};
   form.$$success = {};
   form.$pending = undefined;
-  form.$name = attrs.name || attrs.ngForm;
+  form.$name = $interpolate(attrs.name || attrs.ngForm || '')($scope);
   form.$dirty = false;
   form.$pristine = true;
   form.$valid = true;
@@ -26443,6 +26462,17 @@ function FormController(element, attrs, $scope, $animate) {
     if (control.$name) {
       form[control.$name] = control;
     }
+  };
+
+  // Private API: rename a form control
+  form.$$renameControl = function(control, newName) {
+    var oldName = control.$name;
+
+    if (form[oldName] === control) {
+      delete form[oldName];
+    }
+    form[newName] = control;
+    control.$name = newName;
   };
 
   /**
@@ -26545,6 +26575,25 @@ function FormController(element, attrs, $scope, $animate) {
     form.$submitted = false;
     forEach(controls, function(control) {
       control.$setPristine();
+    });
+  };
+
+  /**
+   * @ngdoc method
+   * @name form.FormController#$setUntouched
+   *
+   * @description
+   * Sets the form to its untouched state.
+   *
+   * This method can be called to remove the 'ng-touched' class and set the form controls to their
+   * untouched state (ng-untouched class).
+   *
+   * Setting a form controls back to their untouched state is often useful when setting the form
+   * back to its pristine state.
+   */
+  form.$setUntouched = function () {
+    forEach(controls, function(control) {
+      control.$setUntouched();
     });
   };
 
@@ -26765,13 +26814,20 @@ var formDirectiveFactory = function(isNgForm) {
               });
             }
 
-            var parentFormCtrl = formElement.parent().controller('form'),
-                alias = attr.name || attr.ngForm;
+            var parentFormCtrl = controller.$$parentForm,
+                alias = controller.$name;
 
             if (alias) {
               setter(scope, alias, controller, alias);
+              attr.$observe(attr.name ? 'name' : 'ngForm', function(newValue) {
+                if (alias === newValue) return;
+                setter(scope, alias, undefined, alias);
+                alias = newValue;
+                setter(scope, alias, controller, alias);
+                parentFormCtrl.$$renameControl(controller, alias);
+              });
             }
-            if (parentFormCtrl) {
+            if (parentFormCtrl !== nullFormCtrl) {
               formElement.on('$destroy', function() {
                 parentFormCtrl.$removeControl(controller);
                 if (alias) {
@@ -26806,10 +26862,10 @@ var URL_REGEXP = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\
 var EMAIL_REGEXP = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
 var NUMBER_REGEXP = /^\s*(\-|\+)?(\d+|(\d*(\.\d*)))\s*$/;
 var DATE_REGEXP = /^(\d{4})-(\d{2})-(\d{2})$/;
-var DATETIMELOCAL_REGEXP = /^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d)(?::(\d\d))?$/;
+var DATETIMELOCAL_REGEXP = /^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d)(?::(\d\d)(\.\d{1,3})?)?$/;
 var WEEK_REGEXP = /^(\d{4})-W(\d\d)$/;
 var MONTH_REGEXP = /^(\d{4})-(\d\d)$/;
-var TIME_REGEXP = /^(\d\d):(\d\d)(?::(\d\d))?$/;
+var TIME_REGEXP = /^(\d\d):(\d\d)(?::(\d\d)(\.\d{1,3})?)?$/;
 var DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
 
 var $ngModelMinErr = new minErr('ngModel');
@@ -27073,8 +27129,8 @@ var inputType = {
     </example>
     */
   'datetime-local': createDateInputType('datetimelocal', DATETIMELOCAL_REGEXP,
-      createDateParser(DATETIMELOCAL_REGEXP, ['yyyy', 'MM', 'dd', 'HH', 'mm', 'ss']),
-      'yyyy-MM-ddTHH:mm:ss'),
+      createDateParser(DATETIMELOCAL_REGEXP, ['yyyy', 'MM', 'dd', 'HH', 'mm', 'ss', 'sss']),
+      'yyyy-MM-ddTHH:mm:ss.sss'),
 
   /**
    * @ngdoc input
@@ -27162,8 +27218,8 @@ var inputType = {
    </example>
    */
   'time': createDateInputType('time', TIME_REGEXP,
-      createDateParser(TIME_REGEXP, ['HH', 'mm', 'ss']),
-     'HH:mm:ss'),
+      createDateParser(TIME_REGEXP, ['HH', 'mm', 'ss', 'sss']),
+     'HH:mm:ss.sss'),
 
    /**
     * @ngdoc input
@@ -27859,7 +27915,7 @@ function createDateParser(regexp, mapping) {
             HH: date.getHours(),
             mm: date.getMinutes(),
             ss: date.getSeconds(),
-            sss: date.getMilliseconds()
+            sss: date.getMilliseconds() / 1000
           };
         } else {
           map = { yyyy: 1970, MM: 1, dd: 1, HH: 0, mm: 0, ss: 0, sss: 0 };
@@ -27870,7 +27926,7 @@ function createDateParser(regexp, mapping) {
             map[mapping[index]] = +part;
           }
         });
-        return new Date(map.yyyy, map.MM - 1, map.dd, map.HH, map.mm, map.ss || 0, map.sss || 0);
+        return new Date(map.yyyy, map.MM - 1, map.dd, map.HH, map.mm, map.ss || 0, map.sss * 1000 || 0);
       }
     }
 
@@ -28449,8 +28505,8 @@ var VALID_CLASS = 'ng-valid',
  *
  *
  */
-var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$parse', '$animate', '$timeout', '$rootScope', '$q',
-    function($scope, $exceptionHandler, $attr, $element, $parse, $animate, $timeout, $rootScope, $q) {
+var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$parse', '$animate', '$timeout', '$rootScope', '$q', '$interpolate',
+    function($scope, $exceptionHandler, $attr, $element, $parse, $animate, $timeout, $rootScope, $q, $interpolate) {
   this.$viewValue = Number.NaN;
   this.$modelValue = Number.NaN;
   this.$validators = {};
@@ -28467,7 +28523,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
   this.$error = {}; // keep invalid keys here
   this.$$success = {}; // keep valid keys here
   this.$pending = undefined; // keep pending keys here
-  this.$name = $attr.name;
+  this.$name = $interpolate($attr.name || '', false)($scope);
 
 
   var parsedNgModel = $parse($attr.ngModel),
@@ -29178,6 +29234,12 @@ var ngModelDirective = function() {
 
         // notify others, especially parent forms
         formCtrl.$addControl(modelCtrl);
+
+        attr.$observe('name', function(newValue) {
+          if (modelCtrl.$name !== newValue) {
+            formCtrl.$$renameControl(modelCtrl, newValue);
+          }
+        });
 
         scope.$on('$destroy', function() {
           formCtrl.$removeControl(modelCtrl);
@@ -30493,6 +30555,7 @@ var ngCloakDirective = ngDirective({
  *
  * @element ANY
  * @scope
+ * @priority 500
  * @param {expression} ngController Name of a constructor function registered with the current
  * {@link ng.$controllerProvider $controllerProvider} or an {@link guide/expression expression}
  * that on the current scope evaluates to a constructor function.
